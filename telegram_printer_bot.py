@@ -68,7 +68,7 @@ def format_citation(username: str, message: str) -> str:
     ]
     
     # Combine all parts
-    citation = header + [""] + content + [""] + footer
+    citation = header + [""] + content + [""] + footer + ["", "", "", ""]
     
     # Return formatted text
     return "\n".join(citation) + "\n"
@@ -204,13 +204,13 @@ def main():
 
         # Print welcome message on thermal printer
         printer.text("********************************\n")
-        printer.text(f"*   {center_text(ministry_name, 24)}    *\n")
-        printer.text("*    PRINTER ACTIVATED       *\n")
+        printer.text(f"*{center_text(ministry_name, 30)}*\n")
+        printer.text("*      PRINTER ACTIVATED       *\n")
         printer.text("********************************\n")
         printer.text("\n")
         printer.text("READY TO PROCESS CITATIONS\n")
         printer.text(f"{glory_text}\n")
-        printer.text("\n")
+        printer.text("\n\n\n")
         
         # Start the Bot
         application.run_polling(allowed_updates=Update.ALL_TYPES)
