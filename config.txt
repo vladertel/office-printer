@@ -1,3 +1,8 @@
 TELEGRAM_BOT_TOKEN=<TELEGRAM_BOT_TOKEN>
 # Comma-separated list of allowed Telegram usernames (without @ symbol)
-ALLOWED_USERS=user1,user2,user3 
+ALLOWED_USERS=user1,user2,user3
+
+# Customizable text elements
+MINISTRY_NAME=MINISTRY OF ADMISSION
+CITATION_TYPE=CITATION - M.O.A
+GLORY_TEXT=GLORY TO ARSTOTZKA 

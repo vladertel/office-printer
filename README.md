@@ -1,6 +1,6 @@
 # Telegram Printer Bot
 
-This Python script runs a Telegram bot that automatically prints received messages on a QR204 thermal printer connected to a Raspberry Pi 3B via serial interface. Only authorized users can send messages to the printer.
+This Python script runs a Telegram bot that automatically prints received messages on a QR204 thermal printer connected to a Raspberry Pi 3B via serial interface. Only authorized users can send messages to the printer, and only ASCII characters are supported.
 
 ## Prerequisites
 
@@ -56,19 +56,32 @@ ALLOWED_USERS=john_doe,jane_smith,bob_wilson
 1. Start a chat with your bot on Telegram
 2. If you're an authorized user:
    - Send the `/start` command to initialize the bot
-   - Send any text message - it will be automatically printed on the thermal printer
+   - Send any text message containing only ASCII characters
+   - Messages with non-ASCII characters (emojis, special symbols, etc.) will be rejected
 3. Unauthorized users will receive an error message and their attempts will be logged
+
+### Message Requirements
+
+The bot only accepts messages containing ASCII characters, which include:
+- Standard English letters (A-Z, a-z)
+- Numbers (0-9)
+- Common punctuation marks (!@#$%^&*()_+-=[]{}|;:'",./<>?)
+- Basic ASCII symbols (~`\)
+- Space and newline characters
+
+Messages containing any other characters (emojis, accented letters, special symbols, etc.) will be rejected with an error message.
 
 ## Features
 
 - Prints incoming Telegram messages on the thermal printer
 - Includes sender's username and message content
 - Restricts access to authorized users only
+- Validates messages for ASCII-only characters
 - Adds a separator line between messages
 - Logs all activity to console
 - Sends confirmation messages back to users
 - Securely stores bot token and user list in a separate configuration file
-- Logs unauthorized access attempts
+- Logs unauthorized access attempts and invalid message formats
 
 ## Error Handling
 
@@ -77,6 +90,7 @@ The bot includes basic error handling for:
 - Missing or invalid configuration file
 - Invalid bot token
 - Unauthorized access attempts
+- Non-ASCII character usage
 - General runtime errors
 
 The bot will log errors and notify users if there are any problems. 
