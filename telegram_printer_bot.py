@@ -99,10 +99,8 @@ async def print_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     try:
         # Format and print the message
-        printer.text(f"From: @{user.username}\n")
-        printer.text(f"Message: {message_text}\n")
+        printer.text(message_text + "\n")
         printer.text("-" * 32 + "\n" * 4)  # Separator
-        
         # Send confirmation to user
         await update.message.reply_text("Message has been printed! 🖨")
     except Exception as e:
