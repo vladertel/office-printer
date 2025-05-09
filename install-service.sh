@@ -18,7 +18,7 @@ SERVICE_FILE="$SCRIPT_DIR/$SERVICE_NAME.service"
 TARGET="/etc/systemd/system/$SERVICE_NAME.service"
 
 # Update the service file with the correct path
-sed -i "s|/home/pi/telegram-printer-bot|$SCRIPT_DIR|g" "$SERVICE_FILE"
+sed -i "s|/home/e/telegram-printer-bot|$SCRIPT_DIR|g" "$SERVICE_FILE"
 
 # Copy service file to systemd directory
 cp "$SERVICE_FILE" "$TARGET"

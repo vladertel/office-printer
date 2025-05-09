@@ -90,20 +90,25 @@ else
 fi
 EOF
 
-# Create config file template
-cat > "$CONFIG_DIR/$CONFIG_NAME" << 'EOF'
+# Create config file template only if it doesn't exist
+if [ ! -f "$CONFIG_DIR/$CONFIG_NAME" ]; then
+    cat > "$CONFIG_DIR/$CONFIG_NAME" << 'EOF'
 # WiFi Configuration
 WIFI_SSID="your_wifi_ssid"
 WIFI_PASSWORD="your_wifi_password"
 EOF
+    chmod 600 "$CONFIG_DIR/$CONFIG_NAME"
+    echo "Created new config file at $CONFIG_DIR/$CONFIG_NAME"
+else
+    echo "Config file already exists at $CONFIG_DIR/$CONFIG_NAME"
+fi
 
 # Set permissions
 chmod +x "$INSTALL_DIR/$SCRIPT_NAME"
-chmod 600 "$CONFIG_DIR/$CONFIG_NAME"
 chmod 755 "$LOG_DIR"
 
 # Create cron job
-CRON_CMD="*/5 * * * * $INSTALL_DIR/$SCRIPT_NAME >> $LOG_DIR/wifi.log 2>&1"
+CRON_CMD="* * * * * $INSTALL_DIR/$SCRIPT_NAME >> $LOG_DIR/wifi.log 2>&1"
 
 # Remove any existing cron job for wifi checker
 crontab -l 2>/dev/null | grep -v "$SCRIPT_NAME" | crontab -
