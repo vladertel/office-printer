@@ -18,18 +18,9 @@ if [ -f "$VENV_DIR/bin/activate" ]; then
     echo "Virtual environment activated from $VENV_DIR"
     echo "Python version: $(python3 --version)"
     echo "Python path: $(which python3)"
-    
-    # Check if any arguments were passed to the script
-    if [ $# -eq 0 ]; then
-        # No arguments - start an interactive Python shell
-        echo "Starting Python interactive shell..."
-        python3
-    else
-        # Arguments provided - run the specified script or command
-        echo "Running: python3 $@"
-        python3 "$@"
-    fi
-    
+
+    python3 ./office-printer/telegram_printer_bot.py
+
     # Deactivate the virtual environment when done
     deactivate
 else
