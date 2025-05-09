@@ -35,7 +35,7 @@ def center_text(text: str, width: int = 32) -> str:
     text = text.strip()
     padding = width - len(text)
     left_padding = padding // 2
-    return " " * left_padding + text
+    return " " * left_padding + text + " " * (padding - left_padding)
 
 def format_citation(username: str, message: str) -> str:
     """Format message as a citation."""
@@ -55,7 +55,7 @@ def format_citation(username: str, message: str) -> str:
     # Format the message content with word wrap
     content = []
     # Wrap text to 30 chars to account for margins
-    wrapped_text = textwrap.wrap(message, width=30)
+    wrapped_text = textwrap.wrap(message, width=32)
     for line in wrapped_text:
         content.append(line)
     
@@ -219,4 +219,5 @@ def main():
         raise
 
 if __name__ == '__main__':
-    main() 
+    # print(format_citation("username", "some long message, some long message, some long message, some long message"))
+    main()
