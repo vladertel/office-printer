@@ -19,7 +19,7 @@ if [ -f "$VENV_DIR/bin/activate" ]; then
     echo "Python version: $(python3 --version)"
     echo "Python path: $(which python3)"
 
-    python3 ./office-printer/telegram_printer_bot.py
+    python3 "$VENV_DIR/src/office-printer/telegram_printer_bot.py"
 
     # Deactivate the virtual environment when done
     deactivate
