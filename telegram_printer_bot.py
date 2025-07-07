@@ -13,8 +13,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logging.getLogger('httpx').setLevel(logging.WARNING)
 
-from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
 from escpos.printer import Serial
 import textwrap
 from datetime import datetime
@@ -26,6 +26,71 @@ allowed_users = set()
 ministry_name = "MINISTRY OF ADMISSION"  # Default value
 citation_type = "CITATION - M.O.A"      # Default value
 glory_text = "GLORY TO ARSTOTZKA"       # Default value
+
+# Default citation reasons
+default_reasons = [
+    "Loud notifications are forbidden",
+    "Had 2 soups for lunch",
+    "Disrespect toward Ministry officials",
+    "Violation of dress code regulations",
+    "Use of contraband electronic devices",
+    "Exceeding allocated break time",
+    "Spreading unauthorized information"
+    "Unauthorized access to restricted area",
+    "Failure to report suspicious activity",
+    # "Failure to complete daily paperwork",
+]
+
+async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handle button clicks from inline keyboards."""
+    query = update.callback_query
+    await query.answer()  # Acknowledge the button click to Telegram
+
+    # Check if this is a reason selection
+    if query.data.startswith("reason:"):
+        reason = query.data[7:]  # Remove the "reason:" prefix
+        user = query.from_user
+
+        # Check if user is authorized
+        if not is_user_authorized(user.username):
+            await query.edit_message_text("ACCESS DENIED - No valid entry permit")
+            logger.warning(f"Unauthorized access attempt by @{user.username}")
+            return
+
+        try:
+            # Format and print the citation
+            formatted_message = format_citation(user.username, reason)
+            printer.text(formatted_message)
+            printer.text("\n" * 2)  # Add some spacing after the citation
+
+            # Update the message to confirm the citation was printed
+            await query.edit_message_text(
+                f"Citation has been printed with reason:\n\n{reason}\n\n{glory_text}! 🖨"
+            )
+        except Exception as e:
+            error_message = f"Failed to print citation: {str(e)}"
+            logger.error(error_message)
+            await query.edit_message_text("Sorry, there was an error printing your citation.")
+
+async def suggest_reasons(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Send a list of suggested citation reasons as clickable buttons."""
+    user = update.message.from_user
+    if not is_user_authorized(user.username):
+        await update.message.reply_text("ACCESS DENIED - No valid entry permit")
+        logger.warning(f"Unauthorized access attempt by @{user.username}")
+        return
+
+    # Create a button for each reason, arranged in a single column
+    keyboard = []
+    for reason in default_reasons:
+        keyboard.append([InlineKeyboardButton(reason, callback_data=f"reason:{reason}")])
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await update.message.reply_text(
+        f"SELECT CITATION REASON:\n\n{glory_text}!",
+        reply_markup=reply_markup
+    )
 
 def is_ascii(text: str) -> bool:
     """Check if the text contains only ASCII characters."""
@@ -148,6 +213,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Official Communications Channel\n\n"
         "Send message to generate citation.\n"
         "ASCII characters only.\n\n"
+        "Use /reasons to select from predefined citation reasons.\n\n"
         f"{glory_text}!"
     )
     await update.message.reply_text(welcome_message)
@@ -203,7 +269,11 @@ def main():
 
         # Add command handlers
         application.add_handler(CommandHandler("start", start))
-        
+        application.add_handler(CommandHandler("reasons", suggest_reasons))
+
+        # Add callback query handler for button presses
+        application.add_handler(CallbackQueryHandler(button_callback))
+
         # Add message handler
         application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, print_message))
 
