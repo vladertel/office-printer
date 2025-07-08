@@ -6,3 +6,8 @@ ALLOWED_USERS=user1,user2,user3
 MINISTRY_NAME=MINISTRY OF ADMISSION
 CITATION_TYPE=CITATION - M.O.A
 GLORY_TEXT=GLORY TO ARSTOTZKA 
+
+# Custom citation reasons (will appear at the top of the list)
+# You can add multiple CUSTOM_REASON lines
+CUSTOM_REASON=Unauthorized coffee break
+CUSTOM_REASON=Excessive keyboard noise

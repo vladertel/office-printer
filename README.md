@@ -37,6 +37,16 @@ Example `config.txt`:
 ```
 TELEGRAM_BOT_TOKEN=your_bot_token_here
 ALLOWED_USERS=john_doe,jane_smith,bob_wilson
+
+# Customizable text elements
+MINISTRY_NAME=MINISTRY OF ADMISSION
+CITATION_TYPE=CITATION - M.O.A
+GLORY_TEXT=GLORY TO ARSTOTZKA
+
+# Custom citation reasons (will appear at the top of the list)
+# You can add multiple CUSTOM_REASON lines
+CUSTOM_REASON=Unauthorized coffee break
+CUSTOM_REASON=Excessive keyboard noise
 ```
 
 ## Running the Bot
@@ -56,7 +66,8 @@ ALLOWED_USERS=john_doe,jane_smith,bob_wilson
 1. Start a chat with your bot on Telegram
 2. If you're an authorized user:
    - Send the `/start` command to initialize the bot
-   - Send any text message containing only ASCII characters
+   - Send any text message containing only ASCII characters to print it as a citation
+   - Use the `/reasons` command to select from predefined citation reasons (including your custom reasons)
    - Messages with non-ASCII characters (emojis, special symbols, etc.) will be rejected
 3. Unauthorized users will receive an error message and their attempts will be logged
 
@@ -82,6 +93,8 @@ Messages containing any other characters (emojis, accented letters, special symb
 - Sends confirmation messages back to users
 - Securely stores bot token and user list in a separate configuration file
 - Logs unauthorized access attempts and invalid message formats
+- Provides a `/reasons` command to select from predefined citation reasons
+- Supports custom citation reasons via configuration (displayed at the top of the list)
 
 ## Error Handling
 

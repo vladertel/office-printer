@@ -26,6 +26,7 @@ allowed_users = set()
 ministry_name = "MINISTRY OF ADMISSION"  # Default value
 citation_type = "CITATION - M.O.A"      # Default value
 glory_text = "GLORY TO ARSTOTZKA"       # Default value
+custom_reasons = []  # Will be populated from config
 
 # Default citation reasons
 default_reasons = [
@@ -35,7 +36,7 @@ default_reasons = [
     "Violation of dress code regulations",
     "Use of contraband electronic devices",
     "Exceeding allocated break time",
-    "Spreading unauthorized information"
+    "Spreading unauthorized information",
     "Unauthorized access to restricted area",
     "Failure to report suspicious activity",
     # "Failure to complete daily paperwork",
@@ -82,6 +83,12 @@ async def suggest_reasons(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Create a button for each reason, arranged in a single column
     keyboard = []
+    
+    # Add custom reasons at the top of the list
+    for reason in custom_reasons:
+        keyboard.append([InlineKeyboardButton(reason, callback_data=f"reason:{reason}")])
+    
+    # Add default reasons
     for reason in default_reasons:
         keyboard.append([InlineKeyboardButton(reason, callback_data=f"reason:{reason}")])
 
@@ -145,10 +152,11 @@ def format_citation(username: str, message: str) -> str:
 
 def read_config():
     """Read the configuration from config file."""
-    global allowed_users, ministry_name, citation_type, glory_text
+    global allowed_users, ministry_name, citation_type, glory_text, custom_reasons
     try:
         with open('config.txt', 'r') as file:
             token = None
+            custom_reasons.clear()  # Clear any existing custom reasons
             
             for line in file:
                 line = line.strip()
@@ -173,6 +181,10 @@ def read_config():
                     citation_type = line.split('=')[1].strip()
                 elif line.startswith('GLORY_TEXT='):
                     glory_text = line.split('=')[1].strip()
+                elif line.startswith('CUSTOM_REASON='):
+                    reason = line.split('=')[1].strip()
+                    if reason:
+                        custom_reasons.append(reason)
             
             if not allowed_users:
                 raise ValueError("No allowed users specified in config.txt")
